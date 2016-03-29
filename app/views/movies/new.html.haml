@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 %h2 Create New Movie
 
  = form_tag movies_path, :method => :post do
@@ -12,3 +13,19 @@
  = date_select :movie, :release_date
 
  = submit_tag ’Save Changes’
+=======
+%h1 Create New Movie
+
+= form_tag movies_path do
+
+  = label :movie, :title, 'Title'
+  = text_field :movie, 'title'
+
+  = label :movie, :rating, 'Rating'
+  = select :movie, :rating, ['G','PG','PG-13','R','NC-17']
+
+  = label :movie, :release_date, 'Released On'
+  = date_select :movie, :release_date
+
+  = submit_tag 'Save Changes'
+>>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75

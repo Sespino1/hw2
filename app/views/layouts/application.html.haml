@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 !!! 5
 %html
 %head
@@ -8,3 +9,22 @@
 
  %body
  = yield
+=======
+!!!
+%html
+  %head
+    %title Rotten Potatoes!
+    = stylesheet_link_tag 'application', 'media' => 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  %body
+    %h1.title Rotten Potatoes!
+    #main
+      - if flash[:notice]
+        #notice.message= flash[:notice]
+      - elsif flash[:warning]
+        #warning.message= flash[:warning]
+
+      = yield
+>>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
