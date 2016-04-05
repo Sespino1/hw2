@@ -1,20 +1,8 @@
-<<<<<<< HEAD
-private
-
-def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
-end
-
-# This file is app/controllers/movies_controller.rb
-
-class MoviesController < ApplicationController
-=======
 class MoviesController < ApplicationController
 
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
->>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -23,30 +11,59 @@ class MoviesController < ApplicationController
   end
 
   def index
-<<<<<<< HEAD
-    @all_ratings = ['G','PG','PG-13','R']
-    @current_ratings = params[:ratings]
-    @movies = Movie.order(params[:sort]).find_all_by_rating(if params[:ratings]; params[:ratings].keys; else; @all_ratings end)
-    if params[:sort] == 'title asc'
-      @class = 1
-    elsif params[:sort] == 'release_date asc'
-      @class = 2
-    end
-=======
     @movies = Movie.all
->>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
-  end
+    @direct = false
+    @all_ratings = Movie.all_ratings
+    
+    if params[:ratings]
+		  @ratings = params[:ratings]
+	  elsif session[:ratings]
+		  @ratings = session[:ratings]
+		  @direct = true
+	  else
+		  @ratings = { 'G' => '1', 'PG' => '1', 'PG-13' => '1', 'R' => '1'}
+	  end
+	
+	  @selected = @ratings.keys
+	
+  	if params[:sort]
+  		@sort = params[:sort]
+  	elsif session[:sort]
+  		@sort = session[:sort]
+  		@direct = true
+  	else
+  		@sort = 'title'
+  	end
+  	
+  	if @direct
+  		redirect_to movies_path(:sort => @sort, :ratings => @ratings)
+  	end
+	
+  	@movies = @movies.select{ |movie| @ratings.has_key?(movie.rating) }
+  	
+  	if params[:commit] == 'Refresh'
+  		session[:ratings] = params[:ratings]
+  	end
+  	
+  	if @sort == 'title'
+  		@movies = @movies.sort_by{ |movie| movie.title }
+  	elsif @sort == 'release_date'
+  		@movies = @movies.sort_by{ |movie| movie.release_date }
+  	end
+  	
+  	instance_eval %Q" @hilite_#{params[:sort]} = true"
+  	
+  	session[:sort] = @sort
+  	session[:ratings] = @ratings
+    end
 
   def new
-    # default: render 'new' template
+   
   end
 
   def create
-<<<<<<< HEAD
-    @movie = Movie.create!(params[:movie])
-=======
-    @movie = Movie.create!(movie_params)
->>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
+    #@movie = Movie.create!(params[:movie]) #old way
+    @movie = Movie.create!(movie_params)  # new way
     flash[:notice] = "#{@movie.title} was successfully created."
     redirect_to movies_path
   end
@@ -57,11 +74,8 @@ class MoviesController < ApplicationController
 
   def update
     @movie = Movie.find params[:id]
-<<<<<<< HEAD
-    @movie.update_attributes!(params[:movie])
-=======
-    @movie.update_attributes!(movie_params)
->>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
+    #@movie.update_attributes!(params[:movie])  # old way
+    @movie.update_attributes!(movie_params)  # new way  
     flash[:notice] = "#{@movie.title} was successfully updated."
     redirect_to movie_path(@movie)
   end
@@ -73,8 +87,4 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
-<<<<<<< HEAD
 end
-=======
-end
->>>>>>> 5452bfba381f4f73b51ad145a3b12977950e3b75
